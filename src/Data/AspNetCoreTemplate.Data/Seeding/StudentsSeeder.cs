@@ -9,7 +9,7 @@ namespace AspNetCoreTemplate.Data.Seeding
     {
         public async Task SeedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
         {
-            if (dbContext.Sudents.Any())
+            if (dbContext.Students.Any())
             {
                 return;   // DB has been seeded
             }
@@ -27,7 +27,7 @@ namespace AspNetCoreTemplate.Data.Seeding
             };
             foreach (Student s in students)
             {
-                await dbContext.Sudents.AddAsync(s);
+                await dbContext.Students.AddAsync(s);
             }
 
         }

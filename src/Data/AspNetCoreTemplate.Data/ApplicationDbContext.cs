@@ -25,7 +25,7 @@
         }
 
         public DbSet<Setting> Settings { get; set; }
-        public DbSet<Student> Sudents { get; set; }
+        public DbSet<Student> Students { get; set; }
         public DbSet<Course> Courses { get; set; }
         public DbSet<Enrollment> Enrollments { get; set; }
 

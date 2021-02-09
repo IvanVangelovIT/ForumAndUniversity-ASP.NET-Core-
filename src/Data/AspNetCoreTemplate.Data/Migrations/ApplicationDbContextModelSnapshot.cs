@@ -277,7 +277,7 @@ namespace AspNetCoreTemplate.Data.Migrations
 
                     b.HasIndex("IsDeleted");
 
-                    b.ToTable("Sudents");
+                    b.ToTable("Students");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
