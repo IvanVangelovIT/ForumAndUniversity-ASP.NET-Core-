@@ -44,9 +44,56 @@ namespace AspNetCoreTemplate.Services.Data
         public IEnumerable<T> GetAll<T>()
         {
             IQueryable<Student> query =
-                 this.studentsRepository.All().OrderBy(x => x.CreatedOn);
+                 this.studentsRepository.All();
             
             return query.To<T>().ToList();
+        }
+
+        public IEnumerable<T> GetBySTudentName<T>(string searchString)
+        {
+            var student = studentsRepository
+                .All()
+                .Where(x => x.FirstName == searchString || x.LastName == searchString);
+
+
+            return student.To<T>().ToList();
+        }
+
+        public IEnumerable<T> GetOrderedStudentsByEnrollmentAscending<T>()
+        {
+            var students = studentsRepository
+               .All()
+               .OrderBy(x => x.EnrollmentDate);
+            
+            return students.To<T>().ToList();
+        }
+
+        public IEnumerable<T> GetOrderedStudentsByEnrollmentDateDescending<T>()
+        {
+            var students = studentsRepository
+               .All()
+               .OrderByDescending(x => x.EnrollmentDate);
+
+            return students.To<T>().ToList();
+        }
+        
+
+        public IEnumerable<T> GetOrderedStudentsByLastNameAscending<T>()
+        {
+            var students = studentsRepository
+                .All()
+                .OrderBy(x => x.LastName);
+
+            return students.To<T>().ToList();
+        }
+
+        public IEnumerable<T> GetOrderedStudentsByLastNameDescending<T>()
+        {
+            var students = studentsRepository
+                .All()
+                .OrderByDescending(x => x.LastName);
+
+            return students.To<T>().ToList();
         }
 
         public T GetStudentById<T>(int? id)
@@ -59,6 +106,16 @@ namespace AspNetCoreTemplate.Services.Data
                  .FirstOrDefault();
 
             return query;
+        }
+
+        public void RemoveStudent(int? id)
+        {
+            var student = studentsRepository
+               .All()
+               .Where(x => x.Id == id)
+               .FirstOrDefault();
+
+             studentsRepository.Delete(student);
         }
 
         public async Task UpdateStudent(int id, DateTime enrollmentDate, string firstName, string midName, string lastName)

@@ -1,10 +1,15 @@
 ﻿using AspNetCoreTemplate.Data;
+using AspNetCoreTemplate.Data.Models;
 using AspNetCoreTemplate.Services.Data;
+using AspNetCoreTemplate.Web.PaginationLogic;
 using AspNetCoreTemplate.Web.ViewModels.Courses;
 using AspNetCoreTemplate.Web.ViewModels.Students;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace AspNetCoreTemplate.Web.Controllers
@@ -24,15 +29,101 @@ namespace AspNetCoreTemplate.Web.Controllers
             this.dbContext = dbContext;
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string sortOrder, string searchString)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+            ViewData["CurrentFilter"] = searchString;
 
-            var viewModel = new StudentIndexViewModel
+            var studentsViewModel = new StudentIndexViewModel
+            {
+                Students = studentsService.GetAll<StudentsViewModel>(),
+            };           
+
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    studentsViewModel.Students = studentsService
+                        .GetOrderedStudentsByLastNameDescending<StudentsViewModel>();
+                    break;
+                case "Date":
+                    studentsViewModel.Students = studentsService
+                         .GetOrderedStudentsByEnrollmentAscending<StudentsViewModel>();
+                    break;
+                case "date_desc":
+                    studentsViewModel.Students = studentsService
+                         .GetOrderedStudentsByEnrollmentDateDescending<StudentsViewModel>();
+                    break;
+                default:
+                    studentsViewModel.Students = studentsService
+                         .GetOrderedStudentsByLastNameAscending<StudentsViewModel>();
+                    break;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                studentsViewModel.Students = studentsService.GetBySTudentName<StudentsViewModel>(searchString);
+                //return this.View(Students);
+            }
+
+
+            return this.View(studentsViewModel);
+        }
+
+        public async Task<IActionResult> Index2(
+            string sortOrder,
+            string currentFilter,
+            string searchString,
+            int? pageNumber)
+        {
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["DateSortParm"] = sortOrder == "Date" ? "date_desc" : "Date";
+
+            if (searchString != null)
+            {
+                pageNumber = 1;
+            }
+            else
+            {
+                searchString = currentFilter;
+            }
+
+            ViewData["CurrentFilter"] = searchString;
+
+           
+            var studentsViewModel = new StudentIndexViewModel
             {
                 Students = studentsService.GetAll<StudentsViewModel>(),
             };
 
-            return this.View(viewModel);
+            switch (sortOrder)
+            {
+                case "name_desc":
+                    studentsViewModel.Students = studentsService
+                        .GetOrderedStudentsByLastNameDescending<StudentsViewModel>();
+                    break;
+                case "Date":
+                    studentsViewModel.Students = studentsService
+                         .GetOrderedStudentsByEnrollmentAscending<StudentsViewModel>();
+                    break;
+                case "date_desc":
+                    studentsViewModel.Students = studentsService
+                         .GetOrderedStudentsByEnrollmentDateDescending<StudentsViewModel>();
+                    break;
+                default:
+                    studentsViewModel.Students = studentsService
+                         .GetOrderedStudentsByLastNameAscending<StudentsViewModel>();
+                    break;
+            }
+
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                studentsViewModel.Students = studentsService.GetBySTudentName<StudentsViewModel>(searchString);
+            }
+
+            int pageSize = 3;
+            return View(await PaginatedList<StudentsViewModel>.CreateAsync((IQueryable<StudentsViewModel>)studentsViewModel.Students.ToList(), pageNumber ?? 1, pageSize));
         }
 
         public IActionResult Create()

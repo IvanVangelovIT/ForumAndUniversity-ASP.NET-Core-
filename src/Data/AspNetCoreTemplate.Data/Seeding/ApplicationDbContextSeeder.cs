@@ -30,6 +30,10 @@
                               new CoursesSeeder(),
                               new StudentsSeeder(),
                               new EnrollmentsSeeder(),
+                              new InstructorsSeeder(),
+                              new CourseAssignmentsSeeder(),
+                              new DeaprtmentsSeeder(),
+                              new OfficeAssignmentsSeeder(),
                           };
 
             foreach (var seeder in seeders)

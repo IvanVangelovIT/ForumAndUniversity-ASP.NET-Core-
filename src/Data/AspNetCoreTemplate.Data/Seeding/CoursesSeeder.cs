@@ -16,13 +16,27 @@ namespace AspNetCoreTemplate.Data.Seeding
 
             var courses = new Course[]
            {
-            new Course{Title="Chemistry",Credits=3},
-            new Course{Title="Microeconomics",Credits=3},
-            new Course{Title="Macroeconomics",Credits=3},
-            new Course{Title="Calculus",Credits=4},
-            new Course{Title="Trigonometry",Credits=4},
-            new Course{Title="Composition",Credits=3},
-            new Course{Title="Literature",Credits=4}
+             new Course { Title = "Chemistry",  Credits = 3,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "Engineering").Id
+                },
+                new Course { Title = "Microeconomics", Credits = 3,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "Economics").Id
+                },
+                new Course { Title = "Macroeconomics", Credits = 3,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "Economics").Id
+                },
+                new Course { Title = "Calculus",       Credits = 4,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "Mathematics").Id
+                },
+                new Course { Title = "Trigonometry",   Credits = 4,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "Mathematics").Id
+                },
+                new Course { Title = "Composition",    Credits = 3,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "English").Id
+                },
+                new Course { Title = "Literature",     Credits = 4,
+                    DepartmentId = dbContext.Departments.Single( s => s.Name == "English").Id
+                },
            };
             foreach (Course c in courses)
             {

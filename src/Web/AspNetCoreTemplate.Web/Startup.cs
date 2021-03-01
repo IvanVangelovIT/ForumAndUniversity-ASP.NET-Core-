@@ -11,6 +11,7 @@
     using AspNetCoreTemplate.Services.Data;
     using AspNetCoreTemplate.Services.Mapping;
     using AspNetCoreTemplate.Services.Messaging;
+    using AspNetCoreTemplate.Web.Areas.SignalR;
     using AspNetCoreTemplate.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
@@ -54,6 +55,7 @@
                     }).AddRazorRuntimeCompilation();
             services.AddRazorPages();
             services.AddDatabaseDeveloperPageExceptionFilter();
+            services.AddSignalR();
 
             services.AddSingleton(this.configuration);
 
@@ -67,6 +69,10 @@
             services.AddTransient<ISettingsService, SettingsService>();
             services.AddTransient<IStudentsService, StudentsService>();
             services.AddTransient<ICoursesService, CoursesService>();
+            services.AddTransient<ICategoriesService, CategoriesService>();
+            services.AddTransient<IPostsService, PostsService>();
+            services.AddTransient<IVotesService, VotesService>();
+            services.AddTransient<ICommentsService, CommentsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -105,9 +111,14 @@
             app.UseEndpoints(
                 endpoints =>
                     {
+                        endpoints.MapControllerRoute(
+                       "forumCategory",
+                       "f/{name:minlength(3)}",
+                       new { controller = "Categories", action = "ByName" });
                         endpoints.MapControllerRoute("areaRoute", "{area:exists}/{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapControllerRoute("default", "{controller=Home}/{action=Index}/{id?}");
                         endpoints.MapRazorPages();
+                        endpoints.MapHub<ChatHub>("/chathub");
                     });
         }
     }

@@ -7,10 +7,10 @@
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+           A(args).Build().Run();
         }
 
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
+        public static IHostBuilder A(string[] args) =>
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                     {

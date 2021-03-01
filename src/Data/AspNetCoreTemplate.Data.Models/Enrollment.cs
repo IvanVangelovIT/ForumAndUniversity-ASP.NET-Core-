@@ -1,6 +1,7 @@
 ﻿using AspNetCoreTemplate.Data.Common.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 namespace AspNetCoreTemplate.Data.Models
@@ -9,6 +10,8 @@ namespace AspNetCoreTemplate.Data.Models
     {
         public int CourseId { get; set; }
         public int StudentId { get; set; }
+
+        [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
 
         public virtual Course Course { get; set; }

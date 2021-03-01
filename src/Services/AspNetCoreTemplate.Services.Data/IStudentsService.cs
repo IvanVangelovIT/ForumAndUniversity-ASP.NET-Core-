@@ -9,8 +9,13 @@ namespace AspNetCoreTemplate.Services.Data
     {
         IEnumerable<T> GetAll<T>();
         Task<T> DoStudentExist<T>(int? id);
-        Task<T> RemoveStudent<T>(int? id);
+        void RemoveStudent(int? id);
 
+        IEnumerable<T> GetBySTudentName<T>(string searchString);
+        IEnumerable<T> GetOrderedStudentsByLastNameDescending<T>();
+        IEnumerable<T> GetOrderedStudentsByLastNameAscending<T>();
+        IEnumerable<T> GetOrderedStudentsByEnrollmentDateDescending<T>();
+        IEnumerable<T> GetOrderedStudentsByEnrollmentAscending<T>();
         Task CreateStudent(DateTime enrollmentDate, string firstName, string midName, string lastName);
         T GetStudentById<T>(int? id);
         Task UpdateStudent(int id, DateTime enrollmentDate, string firstName, string midName, string lastName);
