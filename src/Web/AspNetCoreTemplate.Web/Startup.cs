@@ -12,6 +12,7 @@
     using AspNetCoreTemplate.Services.Mapping;
     using AspNetCoreTemplate.Services.Messaging;
     using AspNetCoreTemplate.Web.Areas.SignalR;
+    using AspNetCoreTemplate.Web.PaginationLogic;
     using AspNetCoreTemplate.Web.ViewModels;
 
     using Microsoft.AspNetCore.Builder;
@@ -73,6 +74,8 @@
             services.AddTransient<IPostsService, PostsService>();
             services.AddTransient<IVotesService, VotesService>();
             services.AddTransient<ICommentsService, CommentsService>();
+            services.AddTransient<IDepartmentsService, DepartmentsService>();
+            services.AddTransient<IInstructorsService, InstructorsService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

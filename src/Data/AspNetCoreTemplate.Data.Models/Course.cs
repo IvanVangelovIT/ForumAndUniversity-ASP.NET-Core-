@@ -12,10 +12,7 @@ namespace AspNetCoreTemplate.Data.Models
             this.Enrollments = new HashSet<Enrollment>();
             this.CourseAssignments = new HashSet<CourseAssignment>();
         }
-        [StringLength(50, MinimumLength = 3)]
         public string Title { get; set; }
-
-        [Range(0, 5)]
         public int Credits { get; set; }
 
         public int DepartmentId { get; set; }
@@ -23,5 +20,7 @@ namespace AspNetCoreTemplate.Data.Models
         public Department Department { get; set; }
         public virtual ICollection<Enrollment> Enrollments { get; set; }
         public virtual ICollection<CourseAssignment> CourseAssignments { get; set; }
+        public string UserId { get; set; }
+        public virtual ApplicationUser User { get; set; }
     }
 }

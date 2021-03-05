@@ -17,7 +17,7 @@ namespace AspNetCoreTemplate.Services.Data
             this.studentsRepository = studentsRepository;
         }
 
-        public async Task CreateStudent(DateTime enrollmentDate, string firstName, string midName, string lastName)
+        public async Task<int> Create<T>(DateTime enrollmentDate, string firstName, string midName, string lastName)
         {
             var student = new Student()
             {
@@ -28,75 +28,11 @@ namespace AspNetCoreTemplate.Services.Data
 
             await this.studentsRepository.AddAsync(student);
             await this.studentsRepository.SaveChangesAsync();
+
+            return student.Id;
         }
 
-        public async Task<T> DoStudentExist<T>(int? id)
-        {
-            var student = studentsRepository
-                .All()
-                .Where(x => x.Id == id)
-                .To<T>()
-                .FirstOrDefault();
-
-            return student;
-        }
-
-        public IEnumerable<T> GetAll<T>()
-        {
-            IQueryable<Student> query =
-                 this.studentsRepository.All();
-            
-            return query.To<T>().ToList();
-        }
-
-        public IEnumerable<T> GetBySTudentName<T>(string searchString)
-        {
-            var student = studentsRepository
-                .All()
-                .Where(x => x.FirstName == searchString || x.LastName == searchString);
-
-
-            return student.To<T>().ToList();
-        }
-
-        public IEnumerable<T> GetOrderedStudentsByEnrollmentAscending<T>()
-        {
-            var students = studentsRepository
-               .All()
-               .OrderBy(x => x.EnrollmentDate);
-            
-            return students.To<T>().ToList();
-        }
-
-        public IEnumerable<T> GetOrderedStudentsByEnrollmentDateDescending<T>()
-        {
-            var students = studentsRepository
-               .All()
-               .OrderByDescending(x => x.EnrollmentDate);
-
-            return students.To<T>().ToList();
-        }
-        
-
-        public IEnumerable<T> GetOrderedStudentsByLastNameAscending<T>()
-        {
-            var students = studentsRepository
-                .All()
-                .OrderBy(x => x.LastName);
-
-            return students.To<T>().ToList();
-        }
-
-        public IEnumerable<T> GetOrderedStudentsByLastNameDescending<T>()
-        {
-            var students = studentsRepository
-                .All()
-                .OrderByDescending(x => x.LastName);
-
-            return students.To<T>().ToList();
-        }
-
-        public T GetStudentById<T>(int? id)
+        public async Task<T> GetStudentById<T>(int? id)
         {
             var query =
                  this.studentsRepository
@@ -108,25 +44,88 @@ namespace AspNetCoreTemplate.Services.Data
             return query;
         }
 
-        public void RemoveStudent(int? id)
+        public async Task<IQueryable<T>> SeatchByName<T>(string searchString)
+        {
+            var students = this.studentsRepository
+                .All()
+                .Where(s =>
+                            s.LastName.Contains(searchString)
+                         || s.FirstName.Contains(searchString))
+                .To<T>();
+
+            return students;
+        }
+        public async Task Delete(int? id)
         {
             var student = studentsRepository
                .All()
                .Where(x => x.Id == id)
                .FirstOrDefault();
 
-             studentsRepository.Delete(student);
+            this.studentsRepository.Delete(student);
+            await this.studentsRepository.SaveChangesAsync();
+        }
+        public IQueryable<T> GetAll<T>()
+        {
+            IQueryable<Student> query =
+                 this.studentsRepository.All();
+            
+            return query.To<T>();
         }
 
-        public async Task UpdateStudent(int id, DateTime enrollmentDate, string firstName, string midName, string lastName)
+        public IQueryable<T> GetStudentsByName<T>(string searchString)
         {
             var student = studentsRepository
                 .All()
-                .Where(x => x.EnrollmentDate == enrollmentDate)
+                .Where(x => x.FirstName == searchString || x.LastName == searchString);
+
+
+            return student.To<T>();
+        }     
+                  
+        public async Task Update(int id, DateTime enrollmentDate, string firstName, string midName, string lastName)
+        {
+            var student = studentsRepository
+                .All()
+                .Where(x => x.Id == id)
                 .FirstOrDefault();
 
-            studentsRepository.Update(student);
-            await this.studentsRepository.SaveChangesAsync();
+            this.studentsRepository.Update(student);
+            this.studentsRepository.SaveChangesAsync();
+        }
+
+        public async Task<IQueryable<T>> OrderBy<T>(string sortOrder)
+        {
+            IQueryable<T> students;
+            switch (sortOrder)
+            {
+                case "name_desc":
+                     students = this.studentsRepository
+                        .All()
+                        .OrderByDescending(s => s.LastName)
+                        .To<T>();
+                    break;
+                case "Date":
+                    students = this.studentsRepository
+                        .All()
+                        .OrderBy(s => s.EnrollmentDate)
+                        .To<T>(); 
+                    break;
+                case "date_desc":
+                    students = this.studentsRepository
+                        .All()
+                        .OrderByDescending(s => s.EnrollmentDate)
+                        .To<T>();
+                    break;
+                default:
+                    students = this.studentsRepository
+                        .All()
+                        .OrderBy(s => s.LastName)
+                        .To<T>();
+                    break;
+            }
+
+            return students;
         }
     }
 }
