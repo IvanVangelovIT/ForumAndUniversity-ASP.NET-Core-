@@ -1,0 +1,85 @@
+﻿@using AspNetCoreTemplate.Web.PaginationLogic;
+@model PaginatedList<AspNetCoreTemplate.Web.ViewModels.Students.StudentIndexViewModel>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+
+<form asp-action="Index" method="get">
+    <div class="form-actions no-color">
+        <p>
+            Find by name: <input type="text" name="SearchString" value="@ViewData["CurrentFilter"]" />
+            <input type="submit" value="Search" class="btn btn-default" /> |
+            <a asp-action="Index">Back to Full List</a>
+        </p>
+    </div>
+</form>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Last Name</a>
+            </th>
+            <th>
+                First Name
+            </th>
+            <th>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["DateSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Enrollment Date</a>
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var items in Model)
+        {
+
+            @foreach (var itemStudent in items.Students)
+            {
+
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemStudent.FirstName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemStudent.LastName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => itemStudent.EnrollmentDate)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@itemStudent.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@itemStudent.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@itemStudent.Id">Delete</a>
+                    </td>
+                </tr>
+                }
+            }
+        </tbody>
+</table>
+
+@{
+    var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+    var nextDisabled = !Model.HasNextPage ? "disabled" : "";
+}
+
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex - 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @prevDisabled">
+    Previous
+</a>
+<a asp-action="Index"
+   asp-route-sortOrder="@ViewData["CurrentSort"]"
+   asp-route-pageNumber="@(Model.PageIndex + 1)"
+   asp-route-currentFilter="@ViewData["CurrentFilter"]"
+   class="btn btn-default @nextDisabled">
+    Next
+</a>
