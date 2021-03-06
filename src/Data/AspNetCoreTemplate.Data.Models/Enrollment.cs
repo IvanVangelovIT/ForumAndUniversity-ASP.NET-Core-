@@ -11,7 +11,6 @@ namespace AspNetCoreTemplate.Data.Models
         public int CourseId { get; set; }
         public int StudentId { get; set; }
 
-        [DisplayFormat(NullDisplayText = "No grade")]
         public Grade? Grade { get; set; }
 
         public virtual Course Course { get; set; }
